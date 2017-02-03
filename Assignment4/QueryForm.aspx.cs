@@ -21,6 +21,7 @@ namespace Assignment4
             }
         }
 
+        //submit button listener
         protected void Submit_btn_Click(object sender, EventArgs e)
         {
             Session["NewName"] = Name_txt.Text.ToString();
