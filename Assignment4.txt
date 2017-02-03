@@ -1,0 +1,32 @@
+Rewrite the Windows Forms based application that you developed for Comp4945 Assignment I as a Web Forms based web application. [3 marks]
+Resources:  Please find enclosed an example of how you would use ASP.NET List View to text and picture in each entry of the list.
+
+Add two web forms Login.aspx and Employee.aspx (remove any pre-existing automatically produced web form named Login.aspx from the project).
+ 
+Login.aspx shall present the user with two text boxes labeled userid and password, and a “login” (as was done in its Windows Forms based predecessor).
+ 
+Hardcode the userid and password for now.  Generate “Login Failure” error as before if the inputted credentials don’t match the hardcoded values. 
+ 
+A successful login shall bring Employee list to the foreground.  Unlike, as in Windows Forms where the UI and business logic were part of the same executable (thus running on the same computer), 
+in Web applications the UI is rendered by the browser based on the code generated and sent by the server. 
+ 
+One way to bring the Employee page to the fore ground subsequent to clicking login button is by calling the Redirect method in the LoginButton_Click handler 
+(the one that gets created in the Login.aspx.cs if you double click on the login button in the design view of Login.aspx): Response.Redirect(“Employee.aspx”);
+ 
+Also note Page.IsPostBack call in the Page_Load event handler in the reference code WebForm1.aspx.cs.  
+This call helps distinguish between original page load and a page load which is the result of a post back.
+ 
+The reference code that I sent earlier should work and will create a list of employee names and addresses provided that the database pointed by DSN has a table named staff with two attributes named “name” and “address”.  
+Currently, however, for each employee row, it will not only show the name and address but also a picture Desert.jpg.  
+You should therefore must have a picture named Desert.jpg in the root folder of your project.
+ 
+If your staff table has a column that contains the names of employee pictures, you can easily make it part of the data bind (just as I did for name and address columns).
+ 
+You can debug your server side as before by putting break points in the C# code.  
+It is highly important that you do so to understand the flow of events and handling otherwise you will struggle during the midterm.
+ 
+If for some reason you want to debug the HTML or javascript code as well, you will need to utilize the bebugging supported by the browser.
+
+
+Rewrite the Windows Forms based application that you developed for Comp4945 Assignment I as a Web Forms based web application. [3 marks]
+Resources:  Please find enclosed an example of how you would use ASP.NET List View to text and picture in each entry of the list.
