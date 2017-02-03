@@ -46,6 +46,7 @@ namespace Assignment4
             dbconn.Close();
         }
 
+        //edit button listener
         protected void Edit_btn_Click(object sender, EventArgs e)
         {
             Session["Name"] = Emp_lst.ToString();
