@@ -4,15 +4,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Employee Listings</title>
+    <style type="text/css">
+        #Img {
+            height: 200px;
+            width: 200px;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
     <div>
-    
-        
-
-        <asp:Image ID="Image1" runat="server" Width="200px" />
+        <img ID="Img" runat="server" src="blank" />
         <br />
         <br />
         <asp:FileUpload ID="ImgUpload" runat="server" />

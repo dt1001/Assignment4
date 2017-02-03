@@ -14,81 +14,69 @@ namespace Assignment4
     {
         private string myConnection = "Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database.accdb");
         OdbcConnection dbconn;
-        DataTable table;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["login"] == null || !(bool)Session["Login"])
+            {
+                Response.Redirect("Login.aspx");
+            }
             dbconn = new OdbcConnection(myConnection);
             dbconn.Open();
 
             String selectAllQry = "Select * from Employees";
             OdbcCommand command = new OdbcCommand(selectAllQry, dbconn);
             OdbcDataAdapter adapt = new OdbcDataAdapter(command);
-            table = new DataTable();
+            DataTable table = new DataTable();
             adapt.Fill(table);
+            //get images
+            table.Columns.Add("img_url");
+            ConvertImg(table);
+            //bind table
             Emp_lst.DataSource = table;
             Emp_lst.DataBind();
+            dbconn.Close();
         }
 
+        //
         protected void Create_btn_Click(object sender, EventArgs e)
         {
+            Session["isEdit"] = false;
             Response.Redirect("QueryForm.aspx");
-            String query = "INSERT INTO Employees(Emp_name,Jobtitle,Startdate,Picblob) VALUES(?,?,?,?);";
-            dbconn.Open();
-            OdbcTransaction dbtrans = dbconn.BeginTransaction();
-            OdbcCommand dbcmd = new OdbcCommand(query, dbconn, dbtrans);
-            dbcmd.Parameters.Add("Emp_name", OdbcType.VarChar).Value = Session["NewName"];
-            dbcmd.Parameters.Add("Jobtitle", OdbcType.VarChar).Value = Session["NewTitle"];
-            dbcmd.Parameters.Add("Startdate", OdbcType.VarChar).Value = Session["NewStartdate"];
-            dbcmd.Parameters.Add("Picblob", OdbcType.VarBinary).Value = Session["NewImg"];
-            dbcmd.ExecuteNonQuery();
-            dbtrans.Commit();
-            dbconn.Close();
         }
 
-        //edit button listener
         protected void Edit_btn_Click(object sender, EventArgs e)
         {
-            Session["Name"] = Emp_lst.ToString();
-            Session["Title"] = Emp_lst.ToString();
-            Session["Startdate"] = Emp_lst.ToString();
-            Response.Redirect("QueryForm.aspx");
-            String query = "UPDATE Employees SET Emp_name=?, Jobtitle=?, Startdate=?, Picblob=? WHERE ID=?;";
-            dbconn.Open();
-            OdbcTransaction dbtrans = dbconn.BeginTransaction();
-            OdbcCommand dbcmd = new OdbcCommand(query, dbconn, dbtrans);
-            dbcmd.Parameters.Add("Emp_name", OdbcType.VarChar).Value = Session["NewName"];
-            dbcmd.Parameters.Add("Jobtitle", OdbcType.VarChar).Value = Session["NewTitle"];
-            dbcmd.Parameters.Add("Startdate", OdbcType.VarChar).Value = Session["NewStartdate"];
-            dbcmd.Parameters.Add("Picblob", OdbcType.VarBinary).Value = Session["NewImg"];
-            dbcmd.Parameters.Add("ID", OdbcType.Int).Value = Convert.ToInt32("temp");
-            dbcmd.ExecuteNonQuery();
-            dbtrans.Commit();
-            dbconn.Close();
+            Session["isEdit"] = true;
+            Response.Redirect("QueryForm.aspx?id="+Request.Form["ID"]);
         }
 
         protected void Delete_btn_Click(object sender, EventArgs e)
         {
-            String query = "DELETE FROM Employees WHERE ID=?";
-            dbconn.Open();
-            OdbcTransaction dbtrans = dbconn.BeginTransaction();
-            OdbcCommand dbcmd = new OdbcCommand(query, dbconn, dbtrans);
-            dbcmd.Parameters.Add("ID", OdbcType.Int).Value = Int32.Parse("temp");
-            dbcmd.ExecuteNonQuery();
-            dbtrans.Commit();
-            dbconn.Close();
+            if (Request.Form["ID"] != null)
+            {
+                String query = "DELETE FROM Employees WHERE ID=?";
+                dbconn.Open();
+                OdbcTransaction dbtrans = dbconn.BeginTransaction();
+                OdbcCommand dbcmd = new OdbcCommand(query, dbconn, dbtrans);
+                dbcmd.Parameters.Add("ID", OdbcType.Int).Value = Request.Form["ID"];
+                dbcmd.ExecuteNonQuery();
+                dbtrans.Commit();
+                dbconn.Close();
+                Response.Redirect("EmployeeTable.aspx");
+            }
         }
 
-        private byte[] ImgtoByte(Image img)
+        private void ConvertImg(DataTable table)
         {
-            if (img == null)
+            for (int i = 0; i < table.Rows.Count; i++)
             {
-                return null;
-            }
-            using (MemoryStream stream = new MemoryStream())
-            {
-                //img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                return stream.ToArray();
+                if (table.Rows[i]["Picblob"] != DBNull.Value)
+                {
+                    byte[] bytes = (byte[])table.Rows[i]["Picblob"];
+                    string temp = Convert.ToBase64String(bytes, 0, bytes.Length);
+                    table.Rows[i]["img_url"] = "data:image/jpeg;base64," + temp;
+                }
             }
         }
     }

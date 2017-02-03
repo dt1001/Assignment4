@@ -13,13 +13,14 @@ namespace Assignment4
         private const String password = "a";
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            Session["Login"] = false;
         }
          
         protected void Login_Click(object sender, EventArgs e)
         {
             
             if (Username_txt.Text.Equals(user) && Password_txt.Text.Equals(password)){
+                Session["Login"] = true;
                 Response.Redirect("EmployeeTable.aspx");
             }
             else

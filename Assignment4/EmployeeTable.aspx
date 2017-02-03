@@ -4,7 +4,13 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Employee Listings</title>
+    <style type="text/css">
+        #img_col {
+            height: 100px;
+            width: 100px;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -12,33 +18,31 @@
         <h1>Employee List</h1>
         <asp:ListView ID="Emp_lst" runat="server" ItemPlaceholderID="itemPlaceHolder">
             <LayoutTemplate>
-                <table>
-                     <asp:PlaceHolder id="itemPlaceHolder" runat="server"></asp:PlaceHolder>
+                <table border="1">
+                    <thead>
+                         <tr runat="server">
+                            <th></th>
+                            <th>Name</th>
+                            <th>Title</th>
+                            <th>Date Started</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <asp:PlaceHolder id="itemPlaceHolder" runat="server"></asp:PlaceHolder>
+                    </tbody>
                 </table>
             </LayoutTemplate>
             <ItemTemplate>
-                <table id="Emp_data">
-                    <td id="radio_col"><input name="Emp_id" value="<%#Eval("emp_id") %>" type="radio"/></td>
+                <table id="items" border="1">
+                <tr>
+                    <td id="radio_col"><input name="ID" value="<%#Eval("ID") %>" type="radio"/></td>
+                    <td><%# Eval("Emp_name") %></td>
+                    <td><%# Eval("Jobtitle") %></td>
+                    <td><%# Eval("Startdate") %></td>
+                    <td id="img_col"><img runat="server" src='<%# Eval("img_url") %>'/></td>
+                </tr>
                 </table>
-                <td id="Data_col">
-                    <table id="Emp_table">
-                        <tr>
-                            <td>Name: </td>
-                            <td><%# Eval("emp_name") %></td>
-                        </tr>
-                        <tr>
-                            <td>Title:</td>
-                            <td><%# Eval("emp_title") %></td>
-                        </tr>
-                        <tr>
-                            <td>Date Started:</td>
-                            <td><%# Eval("emp_start") %></td>
-                        </tr>
-                        <tr>
-                            <img runat="server" src='<%# Eval("emp_image_url") %>'/>
-                        </tr>
-                    </table>
-                </td>
             </ItemTemplate>
         </asp:ListView>
         <asp:Button ID="Create_btn" runat="server" Text="Create" OnClick="Create_btn_Click" />
